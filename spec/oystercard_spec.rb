@@ -30,13 +30,13 @@ describe OysterCard do
   it "confirms that touch out sets in_journey to false" do
     subject.balance = 10
     subject.touch_in(station)
-    subject.touch_out
+    subject.touch_out(station)
     expect(subject.in_journey?).to be_falsy
   end
 
   it "deducts the correct fare on touch out" do
     subject.balance = 10
-    expect {subject.touch_out}.to change {subject.balance}.by(-1)
+    expect {subject.touch_out(station)}.to change {subject.balance}.by(-1)
   end
 
   it "remembers the entry station on touch in" do
@@ -48,9 +48,13 @@ describe OysterCard do
   it "forgets the entry station on touch out" do
     subject.balance = 10
     subject.touch_in(station)
-    subject.touch_out
+    subject.touch_out(station)
     expect(subject.entry_station).to be_nil
 
+  end
+
+  it "has an empty list of journeys by default" do
+    expect(subject.list_of_journeys).to be_empty
   end
 
 end
