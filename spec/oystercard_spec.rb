@@ -1,6 +1,8 @@
 require "./lib/oystercard.rb"
 
 describe OysterCard do
+  let(:station) { double("Paddington") }
+
   it "starts with a default balance of 0" do
     expect(subject.balance).to eq 0
   end
@@ -16,25 +18,39 @@ describe OysterCard do
 
   it "raises an error if the balance is less than minimum balance on touch_in" do
     subject.balance = 0
-    expect { subject.touch_in }.to raise_error("Less than minimum balance of #{OysterCard::MINIMUM_BALANCE}")
+    expect { subject.touch_in(station) }.to raise_error("Less than minimum balance of #{OysterCard::MINIMUM_BALANCE}")
   end
 
   it "confirms that touch in sets in_journey to true" do
     subject.balance = 10
-    subject.touch_in
+    subject.touch_in(station)
     expect(subject.in_journey?).to be_truthy
   end
 
   it "confirms that touch out sets in_journey to false" do
-    subject.in_journey = true
+    subject.balance = 10
+    subject.touch_in(station)
     subject.touch_out
     expect(subject.in_journey?).to be_falsy
   end
 
   it "deducts the correct fare on touch out" do
     subject.balance = 10
-    # subject.touch_out
     expect {subject.touch_out}.to change {subject.balance}.by(-1)
+  end
+
+  it "remembers the entry station on touch in" do
+    subject.balance = 10
+    subject.touch_in(station)
+    expect(subject.entry_station).to eq station
+  end
+
+  it "forgets the entry station on touch out" do
+    subject.balance = 10
+    subject.touch_in(station)
+    subject.touch_out
+    expect(subject.entry_station).to be_nil
+
   end
 
 end
