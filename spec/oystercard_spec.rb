@@ -19,6 +19,18 @@ describe OysterCard do
   it "raises an error if balance tries to exceed £90" do
     expect{ subject.top_up(OysterCard::MAXIMUM_BALANCE + 1) }.to raise_error("Top_up would exceed #{OysterCard::MAXIMUM_BALANCE}")
   end
+
+  it "confirms that touch in sets in_journey to true" do
+    subject.touch_in
+    expect(subject.in_journey?).to be_truthy
+  end
+
+  it "confirms that touch out sets in_journey to false" do
+    subject.in_journey = true
+    subject.touch_out
+    expect(subject.in_journey?).to be_falsy
+  end
+
 end
 
 
