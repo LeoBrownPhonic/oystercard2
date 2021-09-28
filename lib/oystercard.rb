@@ -13,10 +13,6 @@ class OysterCard
     self.balance += amount
   end
 
-  def deduct(amount)
-    self.balance -= amount
-  end
-
   def touch_in
     raise("Less than minimum balance of #{MINIMUM_BALANCE}") if balance < MINIMUM_BALANCE
     self.in_journey = true
@@ -24,10 +20,16 @@ class OysterCard
 
   def touch_out
     self.in_journey = false
+    deduct(1)
   end
 
   def in_journey?
     in_journey
   end
 
+  private
+
+  def deduct(amount)
+    self.balance -= amount
+  end
 end
